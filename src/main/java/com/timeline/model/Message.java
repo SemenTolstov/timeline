@@ -1,16 +1,20 @@
 package com.timeline.model;
 
-import com.timeline.dto.MessageDTO;
+import com.timeline.dto.MessageDto;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+
 
 @Entity
 @NoArgsConstructor
+@Data
 public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -21,8 +25,12 @@ public class Message {
 
     private String text;
 
-    public Message(MessageDTO messageDTO) {
+    @Column(name = "date_of_adding_as_utc")
+    private LocalDateTime added;
+
+    public Message(MessageDto messageDTO) {
         head = messageDTO.getHead();
         text = messageDTO.getText();
+        added = LocalDateTime.now();
     }
 }

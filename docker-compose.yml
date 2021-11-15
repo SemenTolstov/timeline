@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+  backend:
+    image: timeline
+    container_name: timeline
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    command:
+      - spring.datasource.url = jdbc:postgresql://db:5432/timeline
+      - spring.datasource.username = postgres
+      - spring.datasource.password = root

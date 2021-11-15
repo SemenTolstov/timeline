@@ -5,6 +5,7 @@ create table message
     id      int8          not null,
     head    varchar(255),
     text    varchar(2048) not null,
+    date_of_adding_as_utc TIMESTAMP not null,
     user_id int8,
     primary key (id)
 );
