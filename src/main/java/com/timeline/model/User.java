@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.UUID;
 
 
@@ -24,6 +25,7 @@ public class User {
     private UUID uuid;
 
     @Column(name = "login", nullable = false, unique = true)
+    @Size
     private String login;
 
     @Column(name = "password", nullable = false, unique = true)

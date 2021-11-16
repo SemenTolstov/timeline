@@ -85,7 +85,7 @@ public class AppService {
         messageRepo.save(messageFromDb);
     }
 
-    public void deleteMessage(UUID uuid,Long messageId) throws UserNotFoundException,
+    public void deleteMessage(UUID uuid, Long messageId) throws UserNotFoundException,
             MessageNotFoundException, AccessErrorException {
 
         Message messageFromDb = checkMessageForExistence(messageId);

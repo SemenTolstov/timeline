@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -26,6 +27,7 @@ public class Message {
     private String head;
 
     @Column(name = "text", nullable = false)
+    @Size(message = "Text must be more than 10 characters in length", min = 10, max = 1000)
     private String text;
 
     @Column(name = "date_of_adding_as_utc")

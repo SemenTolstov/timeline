@@ -14,3 +14,6 @@ public class Application {
     }
 
 }
+    /**
+     *  CHECK APP: localhost:8080/swagger-ui.html
+     */
