@@ -43,7 +43,7 @@ class AppServiceTest {
     @Test
     public void addUserTest() throws UserAlreadyExistException {
         UserDto userDto = createUserDto();
-        User user = new User(userDto);
+        User user = createUser(userDto);
         Mockito.when(userRepo.save(Mockito.any())).thenReturn(Mockito.any());
         Mockito.when(userRepo.findByLogin(userDto.getLogin().toLowerCase())).thenReturn(null);
         UUID uuid = appService.addUser(userDto);
@@ -68,11 +68,10 @@ class AppServiceTest {
     @Test
     public void addMessageTest() throws UserNotFoundException, UserAlreadyExistException {
         UserDto userDto = createUserDto();
-        User user = new User(userDto);
+        User user = createUser(userDto);
         MessageDto messageDto = createMessageDto();
         Mockito.when(messageRepo.save(Mockito.any())).thenReturn(Mockito.any());
 
-        appService.addUser(userDto);
         assertNotNull(user.getUuid());
         appService.addMessage(user.getUuid(), messageDto);
 

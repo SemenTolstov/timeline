@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 
 @Entity
@@ -21,16 +22,18 @@ public class Message {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "head", nullable = false)
     private String head;
 
+    @Column(name = "text", nullable = false)
     private String text;
 
     @Column(name = "date_of_adding_as_utc")
-    private LocalDateTime added;
+    private LocalDateTime dateOfAddingAsUtc;
 
     public Message(MessageDto messageDTO) {
         head = messageDTO.getHead();
         text = messageDTO.getText();
-        added = LocalDateTime.now();
+        dateOfAddingAsUtc = LocalDateTime.now(ZoneOffset.UTC);
     }
 }

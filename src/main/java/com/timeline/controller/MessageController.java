@@ -21,7 +21,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("timeline")
+@RequestMapping("timeline/messages")
 @Tag(name = "Контроллер новостей(сообщений)", description = "Позволяет управлять сообщениями")
 public class MessageController {
 
@@ -43,7 +43,7 @@ public class MessageController {
         return new ResponseEntity(messagePage, HttpStatus.OK);
     }
 
-    @GetMapping("{uuid}")
+    @GetMapping("user/{uuid}")
     @Operation(summary = "Получение сообщений",
             description = "Получение сообщений конкретного пользователя")
     public ResponseEntity getMessagesByUser(@PathVariable @Parameter(description = DESCRIPT) String uuid) throws UserNotFoundException {
@@ -55,7 +55,7 @@ public class MessageController {
         }
     }
 
-    @PostMapping("{uuid}")
+    @PostMapping("user/{uuid}")
     @Operation(summary = "Добавить сообщение",
             description = "Позволяет пользователю добавлять сообщения")
     public ResponseEntity addMessage(@PathVariable @Parameter(description = DESCRIPT) String uuid,
@@ -70,7 +70,7 @@ public class MessageController {
         }
     }
 
-    @PostMapping("{uuid}/{messageId}")
+    @DeleteMapping("user/{uuid}/message/{messageId}")
     @Operation(summary = "Удаление сообщения",
             description = "Позволяет пользователю удалить сообщение")
     public ResponseEntity deleteMessage(@PathVariable @Parameter(description = DESCRIPT) String uuid,
@@ -87,7 +87,7 @@ public class MessageController {
         }
     }
 
-    @PostMapping("{uuid}/edit/{messageId}")
+    @PutMapping("user/{uuid}/editmessage/{messageId}")
     @Operation(summary = "Изменить сообщение",
             description = "Позволяет пользователю изменить существующее сообщение")
     public ResponseEntity updateMessage(@PathVariable @Parameter(description = DESCRIPT) String uuid,

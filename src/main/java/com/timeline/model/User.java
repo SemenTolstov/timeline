@@ -20,10 +20,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "uuid", nullable = false, unique = true)
     private UUID uuid;
 
+    @Column(name = "login", nullable = false, unique = true)
     private String login;
 
+    @Column(name = "password", nullable = false, unique = true)
     private String password;
 
     public User(UserDto userDTO) {
