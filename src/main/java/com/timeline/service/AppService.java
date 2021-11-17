@@ -19,8 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AppService {
@@ -95,11 +97,11 @@ public class AppService {
         messageRepo.delete(messageFromDb);
     }
 
-    public Page<Message> findAllMessages(int page, int size, SortDirection sortDirection) {
-        Sort sortParam = Sort.by("dateOfAddingAsUtc").descending();
+    public Page<Message> findAllMessages(Pageable pageable) {
+        /*Sort sortParam = Sort.by("dateOfAddingAsUtc").descending();
         if (sortDirection == SortDirection.ASC) sortParam = Sort.by("dateOfAddingAsUtc").ascending();
-        Pageable paging = PageRequest.of(page, size, sortParam);
-        Page<Message> messagePage = messageRepo.findAll(paging);
+        Pageable paging = PageRequest.of(page, size, sortParam);*/
+        Page<Message> messagePage = messageRepo.findAll(pageable);
 
         return messagePage;
     }

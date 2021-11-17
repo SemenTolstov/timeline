@@ -16,7 +16,8 @@ import java.time.ZoneOffset;
 public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "msg_seq")
+    @SequenceGenerator(name = "msg_seq", sequenceName = "msg_seq", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)

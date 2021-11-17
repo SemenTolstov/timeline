@@ -1,21 +1,25 @@
-create table message
-(
-    id                    int8          not null,
-    head                  varchar(255)  not null,
-    text                  varchar(2048) not null,
-    date_of_adding_as_utc TIMESTAMP     not null,
-    user_id               int8        not null,
-    primary key (id)
-);
-
+create sequence usr_seq;
 create table users
 (
-    id       int8         not null,
+    id       int8         not null default nextval('usr_seq'),
     uuid     UUID         not null,
     password varchar(255) not null,
     login    varchar(255) not null,
     primary key (id)
 );
+alter sequence usr_seq owned by users.id;
+
+create sequence msg_seq;
+create table message
+(
+    id                    int8          not null default nextval('msg_seq'),
+    head                  varchar(255)  not null,
+    text                  varchar(2048) not null,
+    date_of_adding_as_utc TIMESTAMP     not null,
+    user_id               int8          not null,
+    primary key (id)
+);
+alter sequence msg_seq owned by message.id;
 
 alter table if exists message
     add constraint message_user_fk

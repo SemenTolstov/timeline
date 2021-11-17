@@ -18,7 +18,8 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usr_seq")
+    @SequenceGenerator(name = "usr_seq", sequenceName = "usr_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "uuid", nullable = false, unique = true)
@@ -34,6 +35,5 @@ public class User {
     public User(UserDto userDTO) {
         uuid = UUID.randomUUID();
         login = userDTO.getLogin().toLowerCase();
-        password = userDTO.getPassword();
     }
 }

@@ -24,4 +24,5 @@ class UserControllerTest {
         Mockito.when(appService.addUser(userDto)).thenReturn();
     }
 
-}*/
+}
+*/

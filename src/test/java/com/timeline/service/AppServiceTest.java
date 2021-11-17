@@ -139,7 +139,7 @@ class AppServiceTest {
         Mockito.verify(messageRepo, Mockito.times(1)).delete(message);
     }
 
-    @Test
+/*    @Test
     public void findAllMessagesTest() {
         Pageable paging = PageRequest.of(0,10, Sort.by("dateOfAddingAsUtc").ascending());
         Mockito.when(messageRepo.findAll(paging)).thenReturn(Page.empty());
@@ -150,7 +150,7 @@ class AppServiceTest {
 
         Mockito.verify(messageRepo, Mockito.times(1)).findAll(paging);
 
-    }
+    }*/
 
     @Test
     public void getAllMessagesByUserTest() throws UserNotFoundException {
