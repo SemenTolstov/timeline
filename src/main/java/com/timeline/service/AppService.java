@@ -96,8 +96,8 @@ public class AppService {
     }
 
     public Page<Message> findAllMessages(int page, int size, SortDirection sortDirection) {
-        Sort sortParam = Sort.by("added").descending();
-        if (sortDirection == SortDirection.ASC) sortParam = Sort.by("added").ascending();
+        Sort sortParam = Sort.by("dateOfAddingAsUtc").descending();
+        if (sortDirection == SortDirection.ASC) sortParam = Sort.by("dateOfAddingAsUtc").ascending();
         Pageable paging = PageRequest.of(page, size, sortParam);
         Page<Message> messagePage = messageRepo.findAll(paging);
 
