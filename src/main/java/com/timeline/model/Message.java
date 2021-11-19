@@ -25,13 +25,14 @@ public class Message {
     private User user;
 
     @Column(name = "head", nullable = false)
+    @Size(message = "Head must be more than 3 characters in length", min = 3)
     private String head;
 
     @Column(name = "text", nullable = false)
     @Size(message = "Text must be more than 10 characters in length", min = 10, max = 1000)
     private String text;
 
-    @Column(name = "date_of_adding_as_utc")
+    @Column(name = "date_of_adding_as_utc", nullable = false)
     private LocalDateTime dateOfAddingAsUtc;
 
     public Message(MessageDto messageDTO) {

@@ -32,8 +32,8 @@ public class User {
     @Column(name = "password", nullable = false, unique = true)
     private String password;
 
-    public User(UserDto userDTO) {
+    public User(UserDto userDto) {
         uuid = UUID.randomUUID();
-        login = userDTO.getLogin().toLowerCase();
+        login = userDto.getLogin().toLowerCase();
     }
 }

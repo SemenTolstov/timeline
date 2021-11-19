@@ -15,6 +15,6 @@ public interface MessageRepo extends JpaRepository<Message, Long> {
 
     Page<Message> findAll(Pageable pageable);
 
-    List<Message> findByUser(Long user_id);
+    List<Message> findByUser(User user);
 
 }
