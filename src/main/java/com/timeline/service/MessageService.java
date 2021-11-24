@@ -30,10 +30,8 @@ public class MessageService {
     public Long addMessage(UUID uuid, MessageDto messageDTO) throws UserNotFoundException {
         User userFromDb = checkUserForExistence(uuid);
         Message message = new Message(messageDTO);
-
         message.setUser(userFromDb);
-        messageRepo.save(message);
-        return message.getId();
+        return messageRepo.save(message).getId();
     }
 
     public Long updateMessage(UUID uuid, Long messageId,
@@ -44,11 +42,9 @@ public class MessageService {
         if (!Objects.equals(checkUserForExistence(uuid).getId(), messageFromDb.getUser().getId())) {
             throw new AccessErrorException();
         }
-        if (messageDTO.getHead() != null) messageFromDb.setHead(messageDTO.getHead());
-        if (messageDTO.getText() != null) messageFromDb.setText(messageDTO.getText());
-        messageRepo.save(messageFromDb);
-
-        return messageFromDb.getId();
+        messageFromDb.setHead(messageDTO.getHead());
+        messageFromDb.setText(messageDTO.getText());
+        return messageRepo.save(messageFromDb).getId();
     }
 
     public void deleteMessage(UUID uuid, Long messageId) throws UserNotFoundException,
@@ -71,18 +67,10 @@ public class MessageService {
     }
 
     private User checkUserForExistence(UUID uuid) throws UserNotFoundException {
-        Optional<User> userFromDb = userRepo.findByUuid(uuid);
-        if (userFromDb.isEmpty()) {
-            throw new UserNotFoundException();
-        }
-        return userFromDb.get();
+        return userRepo.findByUuid(uuid).orElseThrow(UserNotFoundException::new);
     }
 
     private Message checkMessageForExistence(Long messageId) throws MessageNotFoundException {
-        Optional<Message> messageFromDb = messageRepo.findById(messageId);
-        if (messageFromDb.isEmpty()) {
-            throw new MessageNotFoundException();
-        }
-        return messageFromDb.get();
+        return messageRepo.findById(messageId).orElseThrow(MessageNotFoundException::new);
     }
 }

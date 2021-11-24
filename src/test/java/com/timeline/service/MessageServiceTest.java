@@ -47,7 +47,7 @@ class MessageServiceTest {
         User user = createUser(userDto);
         MessageDto messageDto = createMessageDto();
 
-        Mockito.when(messageRepo.save(Mockito.any())).thenReturn(Mockito.any());
+        Mockito.when(messageRepo.save(Mockito.any())).thenReturn(new Message());
         Mockito.when(userRepo.findByUuid(user.getUuid())).thenReturn(Optional.of(user));
 
         messageService.addMessage(user.getUuid(), messageDto);
@@ -64,8 +64,8 @@ class MessageServiceTest {
         message.setText("Some text for second test");
         message.setUser(user);
 
-        Mockito.when(messageRepo.save(Mockito.any())).thenReturn(Mockito.any());
         Mockito.when(messageRepo.findById(message.getId())).thenReturn(Optional.of(message));
+        Mockito.when(messageRepo.save(message)).thenReturn(message);
         Mockito.when(userRepo.findByUuid(user.getUuid())).thenReturn(Optional.of(user));
 
         messageService.updateMessage(user.getUuid(), message.getId(), messageDto);

@@ -21,14 +21,12 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public UUID addUser(UserDto userDTO) throws UserAlreadyExistException {
-        Optional<User> userFromDb = userRepo.findByLogin(userDTO.getLogin().toLowerCase());
-        if (userFromDb.isPresent()) {
+        if (userRepo.findByLogin(userDTO.getLogin().toLowerCase()).isPresent()) {
             throw new UserAlreadyExistException();
         } else {
             User user = new User(userDTO);
             user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            userRepo.save(user);
-            return user.getUuid();
+            return userRepo.save(user).getUuid();
         }
     }
 }

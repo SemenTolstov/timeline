@@ -1,7 +1,6 @@
 package com.timeline.controller;
 
 import com.timeline.dto.UserDto;
-import com.timeline.model.User;
 import com.timeline.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -44,15 +42,6 @@ class UserControllerTest {
         userDto.setLogin("testlogin");
         userDto.setPassword("TestPassword123");
         return userDto;
-    }
-
-    private User createUser(UserDto userDto) {
-        User user = new User(userDto);
-        user.setPassword(userDto.getPassword());
-        assertNotNull(user);
-        assertNotNull(user.getUuid());
-        assertEquals(user.getLogin(), userDto.getLogin());
-        return user;
     }
 
 

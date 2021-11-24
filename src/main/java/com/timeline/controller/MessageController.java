@@ -21,7 +21,7 @@ import java.util.UUID;
 
 
 @RestController
-@RequestMapping("timeline/messages")
+@RequestMapping("timeline")
 @Tag(name = "Контроллер новостей(сообщений)", description = "Позволяет управлять сообщениями")
 public class MessageController {
 

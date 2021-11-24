@@ -34,7 +34,7 @@ class UserServiceTest {
         UserDto userDto = createUserDto();
         User user = createUser(userDto);
 
-        Mockito.when(userRepo.save(Mockito.any())).thenReturn(Mockito.any());
+        Mockito.when(userRepo.save(Mockito.any())).thenReturn(user);
         Mockito.when(userRepo.findByLogin(userDto.getLogin().toLowerCase())).thenReturn(Optional.empty());
 
         userService.addUser(userDto);

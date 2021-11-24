@@ -17,20 +17,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.swing.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.data.domain.PageRequest.of;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(SpringRunner.class)
@@ -94,7 +87,7 @@ class MessageControllerTest {
 
         Mockito.doNothing().when(messageService).deleteMessage(user.getUuid(), messageId);
 
-        ResponseEntity<String> result = messageController.deleteMessage(user.getUuid(),messageId);
+        ResponseEntity<String> result = messageController.deleteMessage(user.getUuid(), messageId);
 
         assertEquals(200, result.getStatusCodeValue());
         Mockito.verify(messageService, Mockito.times(1)).deleteMessage(user.getUuid(), messageId);
@@ -130,16 +123,4 @@ class MessageControllerTest {
         userDto.setPassword("TestPassword123");
         return userDto;
     }
-
-    private User createUser(UserDto userDto) {
-        User user = new User(userDto);
-        user.setPassword(userDto.getPassword());
-
-        assertNotNull(user);
-        assertNotNull(user.getUuid());
-        assertEquals(user.getLogin(), userDto.getLogin());
-        return user;
-    }
-
-
 }

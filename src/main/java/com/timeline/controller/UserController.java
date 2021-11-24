@@ -25,7 +25,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/registration")
+    @PostMapping("/users")
     @Operation(summary = "Регистрация пользователя", description = "Позволяет зарегестрировать пользователя")
     public ResponseEntity<String> registrationUserAccount(@Valid @RequestBody UserDto userDTO) throws UserAlreadyExistException {
 

@@ -3,11 +3,12 @@ services:
   db:
     image: postgres:10.5-alpine
     environment:
-      POSTGRES_PASSWORD: mysecretpassword
+      POSRGRES_USER: postgres
+      POSTGRES_PASSWORD: root
     ports:
-      - "5431:5432"
+      - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
   backend:
     image: timeline
     container_name: timeline
@@ -16,7 +17,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    command:
-      - spring.datasource.url = jdbc:postgresql://db:5432/timeline
+    command: >
+      - spring.datasource.url = jdbc:postgresql://db:5432/postgres
       - spring.datasource.username = postgres
       - spring.datasource.password = root

@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 public class MessageDto {
 
     @NotBlank(message = "Please fill the head of message")
+    @Size(message = "Head must be more than 3 and no more than 10 characters in length", min = 3, max = 10)
     @Schema(description = "Заголовок сообщения")
     private String head;
 
