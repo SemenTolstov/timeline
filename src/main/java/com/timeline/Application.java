@@ -1,12 +1,11 @@
 package com.timeline;
 
-import com.timeline.repo.UserRepo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackageClasses = UserRepo.class)
+@EnableJpaRepositories
 public class Application {
 
     public static void main(String[] args) {
@@ -14,6 +13,3 @@ public class Application {
     }
 
 }
-    /**
-     *  CHECK APP: localhost:8080/swagger-ui.html
-     */

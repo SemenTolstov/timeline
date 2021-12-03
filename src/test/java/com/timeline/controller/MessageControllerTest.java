@@ -1,113 +1,128 @@
 package com.timeline.controller;
 
+import com.google.gson.Gson;
 import com.timeline.dto.MessageDto;
 import com.timeline.dto.UserDto;
-import com.timeline.exception.AccessErrorException;
-import com.timeline.exception.MessageNotFoundException;
-import com.timeline.exception.UserNotFoundException;
 import com.timeline.model.Message;
 import com.timeline.model.User;
 import com.timeline.service.MessageService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
 @RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class MessageControllerTest {
 
-    @InjectMocks
-    MessageController messageController;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private MessageService messageService;
 
     @Test
-    public void testGetAllMessages() {
-        Pageable paging = PageRequest.of(0, 10, Sort.by("dateOfAddingAsUtc").ascending());
-        Message message1 = new Message(createMessageDto());
-        Message message2 = new Message(createMessageDto());
-        Page<Message> messages = new PageImpl<>(Arrays.asList(message1, message2));
+    public void testGetAllMessages() throws Exception {
+        Message message = createMessage(createMessageDto());
+        Page<Message> messagePage = new PageImpl<>(List.of(message));
 
-        Mockito.when(messageService.findAllMessages(paging)).thenReturn(messages);
+        when(messageService.findAllMessages(Mockito.any())).thenReturn(messagePage);
 
-        ResponseEntity<Page<Message>> result = messageController.getAllMessages(paging);
-
-        assertEquals(200, result.getStatusCodeValue());
-        assertEquals(messages.getContent(), Objects.requireNonNull(result.getBody()).getContent());
+        mockMvc.perform(get("/timeline/messages")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id", is(message.getId().intValue())))
+                .andExpect(jsonPath("$.content[0].user", is(message.getUser())))
+                .andExpect(jsonPath("$.content[0].head", is(message.getHead())))
+                .andExpect(jsonPath("$.content[0].text", is(message.getText())))
+                .andExpect(jsonPath("$.content[0].dateOfAddingAsUtc",
+                        is(message.getDateOfAddingAsUtc().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))));
     }
 
+
     @Test
-    public void testMessagesByUser() throws UserNotFoundException {
-        Message message1 = new Message(createMessageDto());
-        Message message2 = new Message(createMessageDto());
-        List<Message> messages = Arrays.asList(message1, message2);
+    public void testMessagesByUser() throws Exception {
+        Message message = new Message(createMessageDto());
+        List<Message> messages = List.of(message);
         User user = new User(createUserDto());
 
-        Mockito.when(messageService.getAllMessagesByUser(user.getUuid())).thenReturn(messages);
+        when(messageService.getAllMessagesByUser(user.getUuid())).thenReturn(messages);
 
-        ResponseEntity<Object> result = messageController.getMessagesByUser(user.getUuid());
-
-        assertEquals(200, result.getStatusCodeValue());
-        assertEquals(messages, result.getBody());
+        mockMvc.perform(get("/timeline/users/{uuid}", user.getUuid()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is(messages.get(0).getId())))
+                .andExpect(jsonPath("$[0].user", is(messages.get(0).getUser())))
+                .andExpect(jsonPath("$[0].head", is(messages.get(0).getHead())))
+                .andExpect(jsonPath("$[0].text", is(messages.get(0).getText())))
+                .andExpect(jsonPath("$[0].dateOfAddingAsUtc",
+                        is(messages.get(0).getDateOfAddingAsUtc().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss")))));
     }
 
     @Test
-    public void testAddMessage() throws UserNotFoundException {
+    public void testAddMessage() throws Exception {
         MessageDto messageDto = createMessageDto();
         Message message = new Message(messageDto);
         message.setId(1L);
         User user = new User(createUserDto());
+        Gson gson = new Gson();
 
-        Mockito.when(messageService.addMessage(user.getUuid(), messageDto)).thenReturn(message.getId());
+        when(messageService.addMessage(user.getUuid(), messageDto)).thenReturn(message.getId());
 
-        ResponseEntity<Object> result = messageController.addMessage(user.getUuid(), messageDto);
-
-        assertEquals(200, result.getStatusCodeValue());
-        assertEquals(message.getId(), result.getBody());
+        mockMvc.perform(post("/timeline/users/{uuid}", user.getUuid())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(messageDto)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is(message.getId().intValue())));
     }
 
     @Test
-    public void testDeleteMessage() throws UserNotFoundException, MessageNotFoundException, AccessErrorException {
+    public void testDeleteMessage() throws Exception {
         Long messageId = 1L;
         User user = new User(createUserDto());
 
-        Mockito.doNothing().when(messageService).deleteMessage(user.getUuid(), messageId);
-
-        ResponseEntity<String> result = messageController.deleteMessage(user.getUuid(), messageId);
-
-        assertEquals(200, result.getStatusCodeValue());
-        Mockito.verify(messageService, Mockito.times(1)).deleteMessage(user.getUuid(), messageId);
-
-
+        mockMvc.perform(delete("/timeline/users/{uuid}/messages/{messageId}", user.getUuid(), messageId))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void testUpdateMessage() throws UserNotFoundException, MessageNotFoundException, AccessErrorException {
+    public void testUpdateMessage() throws Exception {
         MessageDto messageDto = createMessageDto();
         Message message = new Message(messageDto);
         message.setId(1L);
         User user = new User(createUserDto());
+        Gson gson = new Gson();
 
-        Mockito.when(messageService.updateMessage(user.getUuid(), message.getId(), messageDto)).thenReturn(message.getId());
+        when(messageService.updateMessage(user.getUuid(), message.getId(), messageDto)).thenReturn(message.getId());
 
-        ResponseEntity<Object> result = messageController.updateMessage(user.getUuid(), message.getId(), messageDto);
-
-        assertEquals(200, result.getStatusCodeValue());
-        assertEquals(message.getId(), result.getBody());
+        mockMvc.perform(put("/timeline/users/{uuid}/messages/{messageId}", user.getUuid(), message.getId(), messageDto)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(messageDto)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is(message.getId().intValue())));
     }
 
     private MessageDto createMessageDto() {
@@ -115,6 +130,13 @@ class MessageControllerTest {
         messageDto.setHead("testhead");
         messageDto.setText("Some text for test");
         return messageDto;
+    }
+
+    private Message createMessage(MessageDto messageDto) {
+        Message message = new Message(messageDto);
+        message.setUser(null);
+        message.setId(1L);
+        return message;
     }
 
     private UserDto createUserDto() {

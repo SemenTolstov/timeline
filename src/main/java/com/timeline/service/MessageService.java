@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,7 +27,7 @@ public class MessageService {
     private MessageRepo messageRepo;
 
     public Long addMessage(UUID uuid, MessageDto messageDTO) throws UserNotFoundException {
-        User userFromDb = checkUserForExistence(uuid);
+        User userFromDb = getUser(uuid);
         Message message = new Message(messageDTO);
         message.setUser(userFromDb);
         return messageRepo.save(message).getId();
@@ -38,8 +37,8 @@ public class MessageService {
                               MessageDto messageDTO) throws UserNotFoundException,
             MessageNotFoundException, AccessErrorException {
 
-        Message messageFromDb = checkMessageForExistence(messageId);
-        if (!Objects.equals(checkUserForExistence(uuid).getId(), messageFromDb.getUser().getId())) {
+        Message messageFromDb = getMessage(messageId);
+        if (!Objects.equals(getUser(uuid).getId(), messageFromDb.getUser().getId())) {
             throw new AccessErrorException();
         }
         messageFromDb.setHead(messageDTO.getHead());
@@ -50,8 +49,8 @@ public class MessageService {
     public void deleteMessage(UUID uuid, Long messageId) throws UserNotFoundException,
             MessageNotFoundException, AccessErrorException {
 
-        Message messageFromDb = checkMessageForExistence(messageId);
-        if (!Objects.equals(checkUserForExistence(uuid).getId(), messageFromDb.getUser().getId())) {
+        Message messageFromDb = getMessage(messageId);
+        if (!Objects.equals(getUser(uuid).getId(), messageFromDb.getUser().getId())) {
             throw new AccessErrorException();
         }
         messageRepo.delete(messageFromDb);
@@ -62,15 +61,15 @@ public class MessageService {
     }
 
     public List<Message> getAllMessagesByUser(UUID uuid) throws UserNotFoundException {
-        User userFromDb = checkUserForExistence(uuid);
+        User userFromDb = getUser(uuid);
         return messageRepo.findByUser(userFromDb);
     }
 
-    private User checkUserForExistence(UUID uuid) throws UserNotFoundException {
+    private User getUser(UUID uuid) throws UserNotFoundException {
         return userRepo.findByUuid(uuid).orElseThrow(UserNotFoundException::new);
     }
 
-    private Message checkMessageForExistence(Long messageId) throws MessageNotFoundException {
+    private Message getMessage(Long messageId) throws MessageNotFoundException {
         return messageRepo.findById(messageId).orElseThrow(MessageNotFoundException::new);
     }
 }

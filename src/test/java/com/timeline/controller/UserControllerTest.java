@@ -1,48 +1,61 @@
 package com.timeline.controller;
 
+import com.google.gson.Gson;
 import com.timeline.dto.UserDto;
+import com.timeline.model.User;
 import com.timeline.service.UserService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.UUID;
+
+import static org.hamcrest.core.StringContains.containsString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ExtendWith(MockitoExtension.class)
 @RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class UserControllerTest {
 
-    @InjectMocks
-    UserController userController;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private UserService userService;
 
     @Test
     public void testRegistrationUserController() throws Exception {
-        Mockito.when(userService.addUser(Mockito.any())).thenReturn(Mockito.isNotNull());
+        User user = new User(createUserDto());
+        UUID uuid = user.getUuid();
+        Gson gson = new Gson();
+        String json = gson.toJson(createUserDto());
+        when(userService.addUser(Mockito.any())).thenReturn(uuid);
 
-        UserDto userDto = createUserDto();
-        ResponseEntity<String> responseEntity = userController.registrationUserAccount(userDto);
-
-        assertEquals(200, responseEntity.getStatusCodeValue());
-        Mockito.verify(userService, Mockito.times(1)).addUser(userDto);
-
+        mockMvc.perform(post("/timeline/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(uuid.toString())));
     }
 
     private UserDto createUserDto() {
         UserDto userDto = new UserDto();
         userDto.setLogin("testlogin");
-        userDto.setPassword("TestPassword123");
+        userDto.setPassword("TestPas123");
         return userDto;
     }
-
-
 }

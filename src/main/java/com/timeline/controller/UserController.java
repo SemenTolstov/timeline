@@ -6,15 +6,12 @@ import com.timeline.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 
 @RestController
@@ -27,10 +24,8 @@ public class UserController {
 
     @PostMapping("/users")
     @Operation(summary = "Регистрация пользователя", description = "Позволяет зарегестрировать пользователя")
-    public ResponseEntity<String> registrationUserAccount(@Valid @RequestBody UserDto userDTO) throws UserAlreadyExistException {
+    public String registrationUserAccount(@Valid @RequestBody UserDto userDTO) throws UserAlreadyExistException {
 
-        UUID yourUuid = userService.addUser(userDTO);
-
-        return new ResponseEntity<>("Ваш уникальный номер: " + yourUuid, HttpStatus.OK);
+        return "Ваш уникальный номер: " + userService.addUser(userDTO);
     }
 }

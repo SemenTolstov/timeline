@@ -1,7 +1,10 @@
 package com.timeline.model;
 
 import com.timeline.dto.MessageDto;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -11,10 +14,10 @@ import java.time.ZoneOffset;
 import java.util.Objects;
 
 
-@Entity
-@NoArgsConstructor
 @Getter
 @Setter
+@Entity
+@NoArgsConstructor
 @ToString
 public class Message {
 
@@ -56,4 +59,5 @@ public class Message {
     public int hashCode() {
         return Objects.hashCode(getId());
     }
+
 }

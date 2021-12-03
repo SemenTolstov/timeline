@@ -26,7 +26,7 @@ public class User {
     private UUID uuid;
 
     @Column(name = "login", nullable = false, unique = true)
-    @Size
+    @Size(min = 6, max = 10)
     private String login;
 
     @Column(name = "password", nullable = false, unique = true)

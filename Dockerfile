@@ -1,5 +1,5 @@
-FROM openjdk:11 as build
+FROM adoptopenjdk:11-jre-hotspot
+EXPOSE 8080
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","/application.jar"]
+ENTRYPOINT ["java", "-jar", "/application.jar"]
