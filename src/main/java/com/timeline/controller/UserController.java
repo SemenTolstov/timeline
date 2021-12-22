@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 
 @RestController
@@ -24,8 +25,8 @@ public class UserController {
 
     @PostMapping("/users")
     @Operation(summary = "Регистрация пользователя", description = "Позволяет зарегестрировать пользователя")
-    public String registrationUserAccount(@Valid @RequestBody UserDto userDTO) throws UserAlreadyExistException {
+    public UUID registrationUserAccount(@Valid @RequestBody UserDto userDTO) throws UserAlreadyExistException {
 
-        return "Ваш уникальный номер: " + userService.addUser(userDTO);
+        return userService.addUser(userDTO);
     }
 }

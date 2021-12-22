@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public HttpEntity<ErrorResponse> handleUserNotFoundException(HttpServletRequest request,
-                                                                 UserAlreadyExistException ex) {
+                                                                 UserNotFoundException ex) {
         String errorDetails = "User not found. Check data for correct";
         ErrorResponse error = new ErrorResponse("User not found", Collections.singletonList(errorDetails));
         return new ResponseEntity(error, HttpStatus.BAD_REQUEST);

@@ -68,7 +68,7 @@ class MessageControllerTest {
 
         when(messageService.getAllMessagesByUser(user.getUuid())).thenReturn(messages);
 
-        mockMvc.perform(get("/timeline/users/{uuid}", user.getUuid()))
+        mockMvc.perform(get("/timeline/users/{uuid}/messages", user.getUuid()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(messages.get(0).getId())))
@@ -89,7 +89,7 @@ class MessageControllerTest {
 
         when(messageService.addMessage(user.getUuid(), messageDto)).thenReturn(message.getId());
 
-        mockMvc.perform(post("/timeline/users/{uuid}", user.getUuid())
+        mockMvc.perform(post("/timeline/users/{uuid}/messages", user.getUuid())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(messageDto)))
                 .andDo(print())

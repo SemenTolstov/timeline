@@ -4,7 +4,7 @@ create table users
     id       int8        not null default nextval('usr_seq'),
     uuid     UUID        not null,
     password varchar     not null,
-    login    varchar(10) not null,
+    login    varchar(10) not null unique,
     primary key (id)
 );
 alter sequence usr_seq owned by users.id;

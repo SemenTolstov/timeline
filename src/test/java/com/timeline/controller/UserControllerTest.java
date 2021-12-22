@@ -17,12 +17,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
-import static org.hamcrest.core.StringContains.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @RunWith(SpringRunner.class)
@@ -49,7 +48,7 @@ class UserControllerTest {
                         .content(json))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(uuid.toString())));
+                .andExpect(jsonPath("$", is(uuid.toString())));
     }
 
     private UserDto createUserDto() {
